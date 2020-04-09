@@ -74,9 +74,12 @@ direction_command = input(
 while not direction_command == "q":
     if len(direction_command) > 1:
         if direction_command[0] == "drop":
-            newPlayer.drop_item(newPlayer.items[direction_command[0]])
             room[newPlayer.current_room].add_item(
-                newPlayer.items[direction_command[0]])
+                newPlayer.items[0])
+            newPlayer.drop_item(newPlayer.items[0])
+            print(f'You dropped a {direction_command[1]}!')
+            direction_command = input(
+                "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
         elif direction_command[0] == "take":
             if len(room[newPlayer.current_room].items) != 0:
                 if direction_command[1] == room[newPlayer.current_room].items[0].name:
@@ -100,7 +103,7 @@ while not direction_command == "q":
             for item in newPlayer.items:
                 print(item.name, item.description)
             direction_command = input(
-                "Press Enter to close inventory").split(",")
+                "Press Enter to close inventory ").split(",")
         elif direction_command == "n":
             if room[newPlayer.current_room].n_to != None:
                 newPlayer.current_room = room[newPlayer.current_room].n_to
