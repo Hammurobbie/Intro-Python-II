@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -24,20 +25,23 @@ earlier adventurers. The only exit is to the south."""),
 
 # Link rooms together
 
-room['outside'].n_to = room['foyer']
-room['foyer'].s_to = room['outside']
-room['foyer'].n_to = room['overlook']
-room['foyer'].e_to = room['narrow']
-room['overlook'].s_to = room['foyer']
-room['narrow'].w_to = room['foyer']
-room['narrow'].n_to = room['treasure']
-room['treasure'].s_to = room['narrow']
+room['outside'].n_to = 'foyer'
+room['foyer'].s_to = 'outside'
+room['foyer'].n_to = 'overlook'
+room['foyer'].e_to = 'narrow'
+room['overlook'].s_to = 'foyer'
+room['narrow'].w_to = 'foyer'
+room['narrow'].n_to = 'treasure'
+room['treasure'].s_to = 'narrow'
 
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
+
+newPlayer = Player("Jeff Goldblum", "outside")
+
 
 # Write a loop that:
 #
@@ -49,3 +53,61 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+
+
+update = print(
+    f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+
+
+direction_command = input("Which way will you go? (n,s,e,w) Press q to quit ")
+
+while not direction_command == "q":
+    if direction_command == "n":
+        if room[newPlayer.current_room].n_to != None:
+            newPlayer.current_room = room[newPlayer.current_room].n_to
+            print(
+                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+            direction_command = input(
+                "Which way will you go? ")
+        else:
+            print("There is no path in this direction")
+            direction_command = input(
+                "Which way will you go? ")
+    elif direction_command == "s":
+        if room[newPlayer.current_room].s_to != None:
+            newPlayer.current_room = room[newPlayer.current_room].s_to
+            print(
+                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+            direction_command = input(
+                "Which way will you go? ")
+        else:
+            print("There is no path in this direction")
+            direction_command = input(
+                "Which way will you go? ")
+    elif direction_command == "e":
+        if room[newPlayer.current_room].e_to != None:
+            newPlayer.current_room = room[newPlayer.current_room].e_to
+            print(
+                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+            direction_command = input(
+                "Which way will you go? ")
+        else:
+            print("There is no path in this direction")
+            direction_command = input(
+                "Which way will you go? ")
+    elif direction_command == "w":
+        if room[newPlayer.current_room].w_to != None:
+            newPlayer.current_room = room[newPlayer.current_room].w_to
+            print(
+                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+            direction_command = input(
+                "Which way will you go? ")
+        else:
+            print("There is no path in this direction")
+            direction_command = input(
+                "Which way will you go? ")
+    else:
+        print("Please enter n,s,e,w or q to quit")
+        direction_command = input(
+            "Which way will you go? ")
+print("Thanks for playing! Goodbye.")
