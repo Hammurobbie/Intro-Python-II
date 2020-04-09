@@ -1,10 +1,11 @@
 from room import Room
 from player import Player
+from item import Item
 
 # Declare all the rooms
 
 room = {
-    'outside':  Room("Outside Cave Entrance",
+    'outside':  Room("The Cave Entrance",
                      "North of you, the cave mount beckons"),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
@@ -38,76 +39,135 @@ room['treasure'].s_to = 'narrow'
 # Main
 #
 
-# Make a new player object that is currently in the 'outside' room.
+# Player creation
 
 newPlayer = Player("Jeff Goldblum", "outside")
 
+# item creation
 
-# Write a loop that:
-#
-# * Prints the current room name
-# * Prints the current description (the textwrap module might be useful here).
-# * Waits for user input and decides what to do.
-#
-# If the user enters a cardinal direction, attempt to move to the room there.
-# Print an error message if the movement isn't allowed.
-#
-# If the user enters "q", quit the game.
+rag = Item("dirty rag",
+           f'that {newPlayer.name} uses for mysterious reasons')
+lamp = Item("lamp", f'that allows {newPlayer.name} to illuminates dark places')
+dagger = Item("dagger", f'that allows {newPlayer.name} to shank enemies')
+child = Item(
+    "small child", f'that {newPlayer.name} can throw at enemies')
+poison = Item(
+    "poison vial", f'to end {newPlayer.name}\'s existential suffering')
 
+# initial item placement
+
+newPlayer.add_item(rag)
+room['foyer'].add_item(lamp)
+room['overlook'].add_item(dagger)
+room['narrow'].add_item(child)
+room['treasure'].add_item(poison)
+
+# starts game
 
 update = print(
-    f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+    f'{newPlayer.name} wakes up in {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
 
 
-direction_command = input("Which way will you go? (n,s,e,w) Press q to quit ")
+direction_command = input(
+    "Which way will you go? (n,s,e,w) Press i to view inventory or q to quit ")
 
 while not direction_command == "q":
-    if direction_command == "n":
-        if room[newPlayer.current_room].n_to != None:
-            newPlayer.current_room = room[newPlayer.current_room].n_to
-            print(
-                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+    if len(direction_command) > 1:
+        if direction_command[0] == "drop":
+            newPlayer.drop_item(newPlayer.items[direction_command[0]])
+            room[newPlayer.current_room].add_item(
+                newPlayer.items[direction_command[0]])
+        elif direction_command[0] == "take":
+            if len(room[newPlayer.current_room].items) != 0:
+                if direction_command[1] == room[newPlayer.current_room].items[0].name:
+                    newPlayer.add_item(room[newPlayer.current_room].items[0])
+                    room[newPlayer.current_room].drop_item(
+                        room[newPlayer.current_room].items[0])
+                    print(f'You took a {direction_command[1]}!')
+                    direction_command = input(
+                        "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+                else:
+                    print('This item isn\'t in this room')
+                    direction_command = input(
+                        "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+            else:
+                print('There are no items in this room')
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+    elif len(direction_command) == 1:
+        if direction_command == "i":
+            print("Inventory: ")
+            for item in newPlayer.items:
+                print(item.name, item.description)
             direction_command = input(
-                "Which way will you go? ")
+                "Press Enter to close inventory").split(",")
+        elif direction_command == "n":
+            if room[newPlayer.current_room].n_to != None:
+                newPlayer.current_room = room[newPlayer.current_room].n_to
+                print(
+                    f'{newPlayer.name} is now in the {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+                if len(room[newPlayer.current_room].items) != 0:
+                    print(
+                        f'There is a {room[newPlayer.current_room].items[0].name} here!')
+                else:
+                    pass
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+            else:
+                print("There is no path in this direction")
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+        elif direction_command == "s":
+            if room[newPlayer.current_room].s_to != None:
+                newPlayer.current_room = room[newPlayer.current_room].s_to
+                print(
+                    f'{newPlayer.name} is now in the {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+                if len(room[newPlayer.current_room].items) != 0:
+                    print(
+                        f'There is a {room[newPlayer.current_room].items[0].name} here!')
+                else:
+                    pass
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+            else:
+                print("There is no path in this direction")
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+        elif direction_command == "e":
+            if room[newPlayer.current_room].e_to != None:
+                newPlayer.current_room = room[newPlayer.current_room].e_to
+                print(
+                    f'{newPlayer.name} is now in the {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+                if len(room[newPlayer.current_room].items) != 0:
+                    print(
+                        f'There is a {room[newPlayer.current_room].items[0].name} here!')
+                else:
+                    pass
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+            else:
+                print("There is no path in this direction")
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+        elif direction_command == "w":
+            if room[newPlayer.current_room].w_to != None:
+                newPlayer.current_room = room[newPlayer.current_room].w_to
+                print(
+                    f'{newPlayer.name} is now in the {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+                if len(room[newPlayer.current_room].items) != 0:
+                    print(
+                        f'There is a {room[newPlayer.current_room].items[0].name} here!')
+                else:
+                    pass
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
+            else:
+                print("There is no path in this direction")
+                direction_command = input(
+                    "What do you want to do now? (take,item_name), (drop,item_name) or press Enter to go enter other commands ").split(",")
         else:
-            print("There is no path in this direction")
-            direction_command = input(
-                "Which way will you go? ")
-    elif direction_command == "s":
-        if room[newPlayer.current_room].s_to != None:
-            newPlayer.current_room = room[newPlayer.current_room].s_to
             print(
-                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
+                "Please enter n,s,e,w for directions, i for inventory or q to quit")
             direction_command = input(
                 "Which way will you go? ")
-        else:
-            print("There is no path in this direction")
-            direction_command = input(
-                "Which way will you go? ")
-    elif direction_command == "e":
-        if room[newPlayer.current_room].e_to != None:
-            newPlayer.current_room = room[newPlayer.current_room].e_to
-            print(
-                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
-            direction_command = input(
-                "Which way will you go? ")
-        else:
-            print("There is no path in this direction")
-            direction_command = input(
-                "Which way will you go? ")
-    elif direction_command == "w":
-        if room[newPlayer.current_room].w_to != None:
-            newPlayer.current_room = room[newPlayer.current_room].w_to
-            print(
-                f'{newPlayer.name}\'s current position: {room[newPlayer.current_room].name}. {room[newPlayer.current_room].description}')
-            direction_command = input(
-                "Which way will you go? ")
-        else:
-            print("There is no path in this direction")
-            direction_command = input(
-                "Which way will you go? ")
-    else:
-        print("Please enter n,s,e,w or q to quit")
-        direction_command = input(
-            "Which way will you go? ")
-print("Thanks for playing! Goodbye.")
+print(f'Until next time, {newPlayer.name}!')
